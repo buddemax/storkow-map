@@ -25,11 +25,18 @@
   #compass{position:absolute;left:14px;top:14px;z-index:600;width:42px;height:52px;background:rgba(255,255,255,.88);
     border:1px solid #d8d2c4;border-radius:8px;text-align:center;font-size:12px;color:#33465b;padding-top:3px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
   #compass .ar{font-size:20px;line-height:1;color:var(--accent)}
-  .leaflet-tooltip.tl{background:#fff;border:1px solid #cfd6de;border-radius:5px;padding:1px 7px;
-    font-size:12px;font-weight:600;color:#25313f;box-shadow:0 1px 3px rgba(0,0,0,.22);white-space:nowrap}
+  .leaflet-tooltip.tl{background:#fff;border:1px solid #cfd6de;border-radius:6px;text-align:left;padding:3px 8px;
+    font-size:11px;color:#25313f;box-shadow:0 1px 4px rgba(0,0,0,.25);white-space:nowrap;line-height:1.2}
+  .leaflet-tooltip.tl .n{font-weight:700;font-size:11.5px;color:#1a2330}
+  .leaflet-tooltip.tl .a{color:#5a6b7d;font-size:10px;margin-top:1px}
   .leaflet-tooltip.tl:before{display:none}
   .leaflet-tooltip.start{background:var(--accent);color:#fff;border:none;font-weight:700;font-size:11.5px;border-radius:5px;padding:2px 7px}
   .leaflet-tooltip.start:before{display:none}
+  #lbltoggle{position:absolute;right:12px;top:12px;z-index:600;background:#fff;border:1px solid #cfd6de;border-radius:8px;
+    padding:8px 12px;font-size:13px;font-weight:600;color:#25313f;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18);user-select:none}
+  #lbltoggle.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  #lbltoggle .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#c3ccd6;margin-right:7px;vertical-align:middle}
+  #lbltoggle.on .dot{background:#fff}
   .kb{margin:6px 16px 0;border:1px solid var(--line);background:#f6f8f4;border-radius:8px;padding:10px 12px}
   .kb .h{font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:#2e7d32;font-weight:700;margin-bottom:5px}
   .kb p{margin:4px 0;font-size:12px;color:#3a4a5a;line-height:1.35}
@@ -68,7 +75,7 @@
     <div class="sub">Standpunkt: <b>Friedensdorf 4</b> — Friedensdorf 4, 15859 Storkow (Mark)</div>
   </header>
   <div id="main">
-    <div id="map"><div id="compass"><div>N</div><div class="ar">▲</div></div></div>
+    <div id="map"><div id="compass"><div>N</div><div class="ar">▲</div></div><div id="lbltoggle"><span class="dot"></span>Namen &amp; Adressen</div></div>
     <div id="side">
       <div class="startcard">
         <div class="pin"><span class="dot"></span> Friedensdorf 4</div>
@@ -149,6 +156,17 @@ items.forEach(o=>{const p=o.p,c=CATS[p.cat]||{color:'#555'};
   m.bindPopup('<b>'+p.name+'</b><br>'+p.addr+'<br>'+p.info+
     '<br><span class="pm">🚶 '+fmt(p.foot_km)+' km · '+p.foot_min+' Min &nbsp;|&nbsp; 🚗 '+fmt(p.car_km)+' km · '+p.car_min+' Min</span>');
   markers[p.id]=m;});
+
+// --- Umschalter: Namen & Adressen als Beschriftung ein/aus ---
+function labelHtml(p){const c=(CATS[p.cat]||{color:'#555'}).color;
+  return '<div class="n"><span style="color:'+c+'">'+p.id+'</span> '+p.name+'</div><div class="a">'+p.addr+'</div>';}
+let labelsOn=false;
+function setLabels(on){labelsOn=on;
+  DATA.pois.forEach(p=>{const m=markers[p.id];if(!m)return;
+    if(on){m.bindTooltip(labelHtml(p),{permanent:true,direction:dirOf(p),className:'tl',opacity:1});}
+    else{m.unbindTooltip();}});
+  document.getElementById('lbltoggle').classList.toggle('on',on);}
+document.getElementById('lbltoggle').onclick=()=>setLabels(!labelsOn);
 
 function fmt(x){return (x==null)?'–':x.toFixed(1).replace('.',',');}
 
