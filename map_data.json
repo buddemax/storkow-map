@@ -239,6 +239,19 @@
       "foot_min": 37,
       "car_km": 2.75,
       "car_min": 5
+    },
+    {
+      "id": 19,
+      "name": "Dr. med. Franziska-Maria Starke",
+      "cat": "health",
+      "lat": 52.2555476,
+      "lon": 13.9314103,
+      "addr": "Am Markt",
+      "info": "Arztpraxis",
+      "foot_km": 1.89,
+      "foot_min": 25,
+      "car_km": 1.84,
+      "car_min": 3
     }
   ]
 }
